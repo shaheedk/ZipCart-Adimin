@@ -15,8 +15,11 @@ const Login = ({setToken}:any) => {
 toast.error(response.data.message)
    }
      
-    } catch (error:any) {
-      toast.error(error.message)
+    } catch (error) {
+   console.log(error);
+
+        if (error instanceof Error) toast.error(error.message);
+     
     }
   };
   return (

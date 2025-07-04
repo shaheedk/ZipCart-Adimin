@@ -21,7 +21,7 @@ try {
   const response=await axios.post(`${backendUrl}/api/order/list`,{},{headers:{token}})
      if(response.data.success){
       console.log(response.data)
-      setOrders(response.data.orders)
+      setOrders(response.data.orders.reverse())
      }else{
       toast.error(response.data.message)
      }
@@ -33,6 +33,20 @@ try {
   
 }
   }
+
+  const statusHandler=async(event:any,orderId:string)=>{
+    try {
+      const response=await axios.post(`${backendUrl}/api/order/status`,{orderId,status:event.target.value},{headers:{token}})
+      if (response.data.success) {
+        await fetchAllOrders()
+      }
+    } catch (error) {
+       console.log(error);
+       if (error instanceof Error) toast.error(error.message);
+
+    }
+  }
+
 useEffect(()=>{
 fetchAllOrders()
 console.log(orders)
@@ -74,7 +88,7 @@ console.log(orders)
 
   </div>
   <p className="text-sm sm:text-[15px]">{currency}{order.amount}</p>
-<select value={order.status} className="p-2 font-semibold">
+<select onChange={(event)=>statusHandler(event,order._id)} value={order.status} className="p-2 font-semibold">
   <option value="Order Placed">Order Placed</option>
   <option value="Packing">Packing</option>
   <option value="Shipped">Shipped</option>
